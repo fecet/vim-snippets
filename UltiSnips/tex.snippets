@@ -17,8 +17,20 @@ def math():
 		return False
 endglobal
 
-snippet template "Basic template" b
-
+snippet beamertemp "Beamer template" b
+---
+title: "{$1:Factors selection}"
+author: Xie Zejian
+institute: SUSTech
+date: "{$2:Dec 13,2020}"
+output: 
+  beamer_presentation:
+    theme: "AnnArbor"
+    colortheme: "dolphin"
+    fonttheme: "structurebold"
+    includes:
+      in_header: "preamble.tex"
+---
 endsnippet
 
 
