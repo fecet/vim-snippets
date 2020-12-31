@@ -161,7 +161,7 @@ def vim_right_first_p1_not_p2(p1, p2):
 endglobal
 
 
-snippet beamertemp "Beamer template" b
+snippet beamertemp "Beamer template" bA
 ---
 title: "${1:Factors selection}"
 author: Xie Zejian
@@ -178,17 +178,39 @@ output:
 ---
 endsnippet
 
-snippet essaytemp "Essay template" b
+snippet essaytemp "Essay template" bA
 ---
 title: $1
-authors:
-  - name: Xie zejian
-    email: xiezej@gmail.com
+author:
+  - Xie zejian
 bibliography: references.bib
-output: rticles::arxiv_article
+output:
+  bookdown::pdf_document2:
+    includes:
+      in_header: preamble.tex
 ---
 endsnippet
 
+snippet cjktemp "CJK essay" bA
+title: $1
+author:
+  - 谢泽健
+documentclass: ctexart
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+endsnippet
+
+snippet rsetup "r chunks setup" bA
+\`\`\`{r, setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=FALSE)
+## fig.width = 8, collapse = TRUE
+library(tidyverse)
+library(latex2exp)
+\`\`\`
+endsnippet
 
 snippet beg "begin{} / end{}" bA
 \\begin{$1}
@@ -229,7 +251,7 @@ snippet item "Itemize" b
 - $1
 endsnippet
 
-snippet emph "Emph" i
+snippet emph "Emph" iA
 **$1**
 endsnippet
 
@@ -353,7 +375,6 @@ $$ $1 $$$0
 
 endsnippet
 
-
 priority 10000
 snippet 'math(.*)math' "math" wr
 `!p
@@ -363,7 +384,6 @@ code = 'ToString[' + code + ', TeXForm]'
 snip.rv = subprocess.check_output(['wolframscript', '-code', code])
 `
 endsnippet
-
 
 context "math()"
 snippet == "equals" iA
@@ -742,8 +762,12 @@ snippet bigfun "Big function" iA
 .\end{align*}
 endsnippet
 
+snippet nvec "column vector" iA
+\begin{bmatrix} $1 \end{bmatrix}
+endsnippet
+
 snippet cvec "column vector" iA
-\begin{pmatrix} ${1:x}_${2:1}\\\\ \vdots\\\\ $1_${2:n} \end{pmatrix}
+\begin{bmatrix} ${1:x}_${2:1}\\\\ \vdots\\\\ $1_${2:n} \end{bmatrix}
 endsnippet
 
 priority 10
@@ -754,20 +778,14 @@ endsnippet
 
 priority 100
 context "math()"
-snippet "([a-zA-Z])bar" "bar" riA
+snippet "([a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)bar" "bar" riA
 \overline{`!p snip.rv=match.group(1)`}
-endsnippet
-
-priority 10
-context "math()"
-snippet "hat" "hat" riA
-\hat{$1}$0
 endsnippet
 
 priority 100
 context "math()"
-snippet "([a-zA-Z])hat" "hat" riA
-\hat{`!p snip.rv=match.group(1)`}
+snippet "([a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)hat" "hat" riA
+\hat{`!p snip.rv=match.group(1)`$0}
 endsnippet
 
 snippet letw "let omega" iA
@@ -789,36 +807,26 @@ snippet topo "topology" iA
 \tau
 endsnippet
 
-context "math()"
-snippet alp "alpha" iA
-\alpha
-endsnippet
-
-context "math()"
-snippet omg "omega" iA
-\omega
-endsnippet
-
-snippet #1 "section #" iA
+snippet title "section #" bA
 # 
 endsnippet
 
-snippet #2 "section ##" iA
+snippet sc "section ##" bA
 ## 
 endsnippet
 
-snippet #3 "section ###" iA
+snippet ssc "section ###" bA
 ### 
 endsnippet
 
-snippet #4 "section ####" iA
+snippet sssc "section ####" bA
 #### 
 endsnippet
 
 priority 100
 context "math()"
 snippet "\b([a-zA-Z])ii" "?i" riA
-`!p snip.rv=match.group(1)`_{i}
+`!p snip.rv=match.group(1)`_i
 endsnippet
 
 priority 101
@@ -836,7 +844,7 @@ endsnippet
 priority 100
 context "math()"
 snippet "(\d[a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)jj" "?j" riA
-`!p snip.rv=match.group(1)`_{j}
+`!p snip.rv=match.group(1)`_j
 endsnippet
 
 snippet dfun "Definition of function" iA
@@ -855,6 +863,11 @@ snippet var "variance" iA
 \mathop{\text{Var}}\left[ $1 \right]
 endsnippet
 
+context "math()"
+snippet cov "covariance" iA
+\mathop{\text{Cov}}\left[ $1,$2 \right]
+endsnippet
+
 
 context "math()"
 snippet Gr "Graph" iA
@@ -868,14 +881,16 @@ endsnippet
 
 priority 100
 context "math()"
-snippet "(\\?[a-zA-Z]\w*)bf" "mathbf" riA
-\bm{\mathbf{`!p snip.rv=match.group(1)`}}
+snippet "([\\|a-z|A-Z|']*)bf" "mathbf" riA
+\bm{\mathbf{`!p snip.rv=match.group(1)`$1}}
 endsnippet
 
 snippet lem "lemma" b
 
-::: {.lemma ${2:#label} name="${3}"}
-${1:${VISUAL}}
+::: {.lemma ${1:#label} name="${2}"}
+
+${3:${VISUAL}}
+
 :::
 
 endsnippet
@@ -883,39 +898,52 @@ endsnippet
 
 snippet thm "theorem" b
 
-::: {.theorem ${2:#label} name="${3}"}
-${1:${VISUAL}}
+::: {.theorem ${1:#label} name="${2}"}
+
+${3:${VISUAL}}
+
 :::
 
 endsnippet
 
-snippet def "definion" b
+snippet def "definition" b
 
-::: {.definiton ${2:#label} name="${3}"}
-${1:${VISUAL}}
+::: {.definition ${1:#label} name="${2}"}
+
+${3:${VISUAL}}
+
 :::
 
 endsnippet
 
 
 snippet cor "corollary" b
+::: {.corollary ${1:#label} name="${2}"}
 
-::: {.corollary ${2:#label} name="${3}"}
-${1:${VISUAL}}
+${3:${VISUAL}}
+
 :::
 endsnippet
 
 snippet prof "proof" b
 
 ::: {.proof}
+
 ${1:${VISUAL}}
+
 :::
 
 endsnippet
 
+snippet rcod "r-code" bA
+\`\`\`{r}
+$1
+\`\`\`
+endsnippet
+
 
 snippet cref "cross reference" i
-\@ref{$1:$2}
+\@ref($1:$2)
 endsnippet
 
 # 上一个单词转换成小写
@@ -941,4 +969,39 @@ endsnippet
 context "math()"
 snippet eces "complement" iA
 ^e
+endsnippet
+
+snippet bigopt "Optimization problem" iA
+\begin{aligned}
+	\min &\quad ${1:f(x)}\\\\
+	\text{s.t.} &\quad ${2:g(x)} \leq 0\\\\
+				&\quad ${3:h(x)} = 0\\\\
+\end{align*}
+endsnippet
+
+snippet bigmax "Optimization problem" iA
+\begin{aligned}
+	\max &\quad ${1:f(x)}
+	\\\\s.t. &\quad ${2:g(x)} = 0
+\end{aligned}
+endsnippet
+
+snippet st "such that" i
+s.t.
+endsnippet
+
+context "math()"
+snippet % "percent" iA
+\%
+endsnippet
+
+
+context "math()"
+snippet and "and" iA
+\text{ and }
+endsnippet
+
+context "math()"
+snippet or "and" iA
+\text{ or }
 endsnippet
