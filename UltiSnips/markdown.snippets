@@ -160,6 +160,61 @@ def vim_right_first_p1_not_p2(p1, p2):
 
 endglobal
 
+snippet help "help of sup" b
+The options currently supported are: >
+   b   Beginning of line - A snippet with this option is expanded only if the
+       tab trigger is the first word on the line. In other words, if only
+       whitespace precedes the tab trigger, expand. The default is to expand
+       snippets at any position regardless of the preceding non-whitespace
+       characters.
+
+   i   In-word expansion - By default a snippet is expanded only if the tab
+       trigger is the first word on the line or is preceded by one or more
+       whitespace characters. A snippet with this option is expanded
+       regardless of the preceding character. In other words, the snippet can
+       be triggered in the middle of a word.
+
+   w   Word boundary - With this option, the snippet is expanded if
+       the tab trigger start matches a word boundary and the tab trigger end
+       matches a word boundary. In other words the tab trigger must be
+       preceded and followed by non-word characters. Word characters are
+       defined by the 'iskeyword' setting. Use this option, for example, to
+       permit expansion where the tab trigger follows punctuation without
+       expanding suffixes of larger words.
+
+   r   Regular expression - With this option, the tab trigger is expected to
+       be a python regular expression. The snippet is expanded if the recently
+       typed characters match the regular expression. Note: The regular
+       expression MUST be quoted (or surrounded with another character) like a
+       multi-word tab trigger (see above) whether it has spaces or not. A
+       resulting match is passed to any python code blocks in the snippet
+       definition as the local variable "match".
+
+   t   Do not expand tabs - If a snippet definition includes leading tab
+       characters, by default UltiSnips expands the tab characters honoring
+       the Vim 'shiftwidth', 'softtabstop', 'expandtab' and 'tabstop'
+       indentation settings. (For example, if 'expandtab' is set, the tab is
+       replaced with spaces.) If this option is set, UltiSnips will ignore the
+       Vim settings and insert the tab characters as is. This option is useful
+       for snippets involved with tab delimited formats.
+
+   s   Remove whitespace immediately before the cursor at the end of a line
+       before jumping to the next tabstop.  This is useful if there is a
+       tabstop with optional text at the end of a line.
+
+   m   Trim all whitespaces from right side of snippet lines. Useful when
+       snippet contains empty lines which should remain empty after expanding.
+       Without this option empty lines in snippets definition will have
+       indentation too.
+
+   e   Custom context snippet - With this option expansion of snippet can be
+       controlled not only by previous characters in line, but by any given
+       python expression. This option can be specified along with other
+       options, like 'b'. See |UltiSnips-custom-context-snippets| for more info.
+
+   A   Snippet will be triggered automatically, when condition matches.
+       See |UltiSnips-autotrigger| for more info.
+endsnippet
 
 snippet beamertemp "Beamer template" bA
 ---
@@ -205,8 +260,14 @@ endsnippet
 
 snippet rsetup "r chunks setup" bA
 \`\`\`{r, setup, include=FALSE}
-knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=FALSE)
-## fig.width = 8, collapse = TRUE
+knitr::opts_chunk$set(warning=FALSE,
+					  message=FALSE,
+					  echo=FALSE, 
+					  fig.width=8)
+## collapse = TRUE
+# dec = 'jpeg'
+# eval = FALSE
+# https://yihui.org/knitr/options/#chunk-options
 library(tidyverse)
 library(latex2exp)
 \`\`\`
@@ -243,17 +304,7 @@ snippet fig "Figure environment" b
 \end{figure}
 endsnippet
 
-snippet enum "Enumerate" b
-1. ${1:text}
-endsnippet
 
-snippet item "Itemize" b
-- $1
-endsnippet
-
-snippet emph "Emph" iA
-**$1**
-endsnippet
 
 snippet desc "Description" b
 \begin{description}
@@ -267,17 +318,17 @@ endsnippet
 
 context "math()"
 snippet => "implies" Ai
-\implies
+\xRightarrow{}
 endsnippet
 
 context "math()"
-snippet =< "implied by" Ai
-\impliedby
+snippet <= "implied by" Ai
+\xLeftarrow{}
 endsnippet
 
 context "math()"
 snippet iff "iff" Ai
-\iff
+\xLeftrightarrow{}
 endsnippet
 
 snippet xm "Math" wA
@@ -291,12 +342,6 @@ if t[2] and t[2][0] not in [',', '.', '?', '-', ' ']:
 else:
 	snip.rv = ''
 `$2
-endsnippet
-
-snippet dm "Math" wA
-\[
-${1:${VISUAL}}
-.\]$0
 endsnippet
 
 context "math()"
@@ -351,11 +396,6 @@ snippet '([A-Za-z])_(\d\d)' "auto subscript2" wrA
 `!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}
 endsnippet
 
-
-snippet sympy "sympyblock " w
-sympy $1 sympy$0
-endsnippet
-
 priority 10000
 snippet 'sympy(.*)sympy' "sympy" wr
 `!p
@@ -369,9 +409,11 @@ snip.rv = eval('latex(' + match.group(1).replace('\\', '').replace('^', '**').re
 endsnippet
 
 priority 1000
-snippet mm "mathematicablock" w
+snippet mm "mathematicablock" wsA
 
-$$ $1 $$$0
+$$ 
+$1
+$$$0
 
 endsnippet
 
@@ -387,7 +429,7 @@ endsnippet
 
 context "math()"
 snippet == "equals" iA
-&= $1 \\\\
+\\\\ &= $1
 endsnippet
 
 context "math()"
@@ -413,6 +455,14 @@ endsnippet
 context "math()"
 snippet bmat "bmat" iA
 \begin{bmatrix} $1 \end{bmatrix}$0
+endsnippet
+
+snippet ( "()" iA
+($1)
+endsnippet
+
+snippet { "()" iwA
+{$1}
 endsnippet
 
 
@@ -450,11 +500,6 @@ endsnippet
 
 snippet lra "leftangle rightangle" iA
 \left<${1:${VISUAL}} \right>$0
-endsnippet
-
-context "math()"
-snippet conj "conjugate" iA
-\overline{$1}$0
 endsnippet
 
 context "math()"
@@ -509,11 +554,6 @@ snippet td "to the ... power" iA
 endsnippet
 
 context "math()"
-snippet rd "to the ... power" iA
-^{($1)}$0
-endsnippet
-
-context "math()"
 snippet __ "subscript" iA
 _{$1}$0
 endsnippet
@@ -528,13 +568,23 @@ snippet rij "mrij" i
 endsnippet
 
 context "math()"
-snippet <= "leq" iA
+snippet le "leq" iA
 \le 
 endsnippet
 
 context "math()"
-snippet >= "geq" iA
+snippet ge "geq" iA
 \ge 
+endsnippet
+
+context "math()"
+snippet lt "leq" iA
+<
+endsnippet
+
+context "math()"
+snippet gt "geq" iA
+>
 endsnippet
 
 context "math()"
@@ -577,16 +627,6 @@ snippet mcal "mathcal" iA
 endsnippet
 
 context "math()"
-snippet lll "l" iA
-\ell
-endsnippet
-
-context "math()"
-snippet nabl "nabla" iA
-\nabla 
-endsnippet
-
-context "math()"
 snippet xx "cross" iA
 \times 
 endsnippet
@@ -602,9 +642,20 @@ snippet norm "norm" iA
 \|$1\|$0
 endsnippet
 
+context "math()"
+snippet abs "abs value" iA
+|$1|$0
+endsnippet
+
 priority 100
 context "math()"
 snippet '(?<!\\)(sin|cos|arccot|cot|csc|ln|log|exp|star|perp)' "ln" rwA
+\\`!p snip.rv = match.group(1)`
+endsnippet
+
+priority 100
+context "math()"
+snippet '(?<!\\)(mu|alpha|sigma|rho|beta|gamma|delta|zeta|eta|varepsilon|epsilon|theta|iota|kappa|vartheta|lambda|nu|pi|rho|tau|upsilog|phi|chi|psi|omega|Gamma|Delta|Theta|Lambda|Xi|Pi|Sigma|Upsilon|Phi|Psi|Omega)' "ln" rwA
 \\`!p snip.rv = match.group(1)`
 endsnippet
 
@@ -625,6 +676,12 @@ priority 100
 context "math()"
 snippet to "to" iA
 \to 
+endsnippet
+
+priority 1000
+context "math()"
+snippet xto "to" iA
+\xrightarrow{}
 endsnippet
 
 context "math()"
@@ -667,6 +724,11 @@ snippet cc "subset" Ai
 endsnippet
 
 context "math()"
+snippet pc "subset" Ai
+\supset 
+endsnippet
+
+context "math()"
 snippet notin "not in " iA
 \notin 
 endsnippet
@@ -682,12 +744,12 @@ snippet NN "n" iA
 endsnippet
 
 context "math()"
-snippet Nn "cap" iA
+snippet cap "cap" iA
 \cap 
 endsnippet
 
 context "math()"
-snippet Uu "cup" iA
+snippet cup "cup" iA
 \cup 
 endsnippet
 
@@ -704,7 +766,7 @@ endsnippet
 
 context "math()"
 snippet OO "emptyset" iA
-\O
+\emptyset
 endsnippet
 
 context "math()"
@@ -750,10 +812,6 @@ snippet case "cases" wA
 \end{cases}
 endsnippet
 
-snippet SI "SI" iA
-\SI{$1}{$2}
-endsnippet
-
 
 snippet bigfun "Big function" iA
 \begin{align*}
@@ -778,49 +836,18 @@ endsnippet
 
 priority 100
 context "math()"
-snippet "([a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)bar" "bar" riA
+snippet "([a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varphi|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)bar" "bar" riA
 \overline{`!p snip.rv=match.group(1)`}
 endsnippet
 
 priority 100
 context "math()"
-snippet "([a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)hat" "hat" riA
+snippet "([a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varphi|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)hat" "hat" riA
 \hat{`!p snip.rv=match.group(1)`$0}
 endsnippet
 
 snippet letw "let omega" iA
 Let $\Omega$ be a space.
-endsnippet
-
-context "math()"
-snippet HH "H" iA
-\mathbb{H}
-endsnippet
-
-context "math()"
-snippet DD "D" iA
-\mathbb{D}
-endsnippet
-
-context "math()"
-snippet topo "topology" iA
-\tau
-endsnippet
-
-snippet title "section #" bA
-# 
-endsnippet
-
-snippet sc "section ##" bA
-## 
-endsnippet
-
-snippet ssc "section ###" bA
-### 
-endsnippet
-
-snippet sssc "section ####" bA
-#### 
 endsnippet
 
 priority 100
@@ -831,7 +858,7 @@ endsnippet
 
 priority 101
 context "math()"
-snippet "(\d[a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)ii" "?i" riA
+snippet "([a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varphi|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)ii" "?i" riA
 `!p snip.rv=match.group(1)`_i
 endsnippet
 
@@ -843,7 +870,7 @@ endsnippet
 
 priority 100
 context "math()"
-snippet "(\d[a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)jj" "?j" riA
+snippet "([a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varphi|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)jj" "?j" riA
 `!p snip.rv=match.group(1)`_j
 endsnippet
 
@@ -877,6 +904,21 @@ endsnippet
 context "math()"
 snippet Adh "Adherence" iA
 \mathop{\text{Adh}}
+endsnippet
+
+context "math()"
+snippet Int "Interior" iA
+\mathop{\text{Int}}
+endsnippet
+
+context "math()"
+snippet circ "Interior" iA
+\circ
+endsnippet
+
+context "math()"
+snippet vph "var phi" iA
+\varphi
 endsnippet
 
 priority 100
@@ -1004,4 +1046,49 @@ endsnippet
 context "math()"
 snippet or "and" iA
 \text{ or }
+endsnippet
+
+context "math()"
+snippet over "and" iA
+\overset{$1}{$2}
+endsnippet
+
+
+
+# Markdown syntax
+
+snippet chp "section #" b
+# 
+endsnippet
+
+snippet sc "section ##" bA
+## 
+endsnippet
+
+snippet ssc "section ###" bA
+### 
+endsnippet
+
+snippet sssc "section ####" bA
+#### 
+endsnippet
+
+snippet enum "Enumerate" b
+1. ${1:text}
+endsnippet
+
+snippet item "Itemize" b
+- $1
+endsnippet
+
+snippet emph "Emph" iA
+**$1**
+endsnippet
+
+snippet newl "new line" b
+<br>
+endsnippet
+
+snippet slink "url" i
+[$1]($2)
 endsnippet
