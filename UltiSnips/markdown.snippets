@@ -281,7 +281,7 @@ endsnippet
 
 priority 100
 snippet ... "ldots" iA
-\ldots
+\dots
 endsnippet
 
 snippet table "Table environment" b
@@ -331,9 +331,25 @@ snippet iff "iff" Ai
 \xLeftrightarrow{}
 endsnippet
 
-snippet xm "Math" wA
-$$1$
+context "math()"
+snippet embed "embedding" Ai
+\hookrightarrow
 endsnippet
+
+context "math()"
+snippet ss "embedding" Ai
+\succsim 
+endsnippet
+
+context "math()"
+snippet su "embedding" Ai
+\succ 
+endsnippet
+
+snippet kk "Math" iAs
+ $$1$
+endsnippet
+
 
 snippet mk "Math" wA
 $${1:${VISUAL}}$`!p
@@ -349,6 +365,11 @@ snippet ali "Align" iA
 \begin{aligned}
 	${1:${VISUAL}}
 \end{aligned}
+endsnippet
+
+context "math()"
+snippet qt "Quotient" iA
+/
 endsnippet
 
 
@@ -429,6 +450,7 @@ endsnippet
 
 context "math()"
 snippet == "equals" iA
+
 \\\\ &= $1
 endsnippet
 
@@ -529,7 +551,7 @@ endsnippet
 
 context "math()"
 snippet coprod "product" wA
-\prod_{${1:n=1}} ${4:${VISUAL}}$0
+\coprod_{${1:n=1}} ${4:${VISUAL}}$0
 endsnippet
 
 
@@ -660,7 +682,7 @@ endsnippet
 
 priority 100
 context "math()"
-snippet '(?<!\\)(mu|alpha|sigma|rho|beta|gamma|delta|zeta|eta|varepsilon|epsilon|theta|iota|kappa|vartheta|lambda|nu|pi|rho|tau|upsilog|phi|chi|psi|omega|Gamma|Delta|Theta|Lambda|Xi|Pi|Sigma|Upsilon|Phi|Psi|Omega|ell)' "ln" rwA
+snippet '(?<!\\)(mu|alpha|sigma|rho|beta|gamma|delta|zeta|eta|varepsilon|epsilon|theta|iota|kappa|vartheta|lambda|nu|pi|rho|tau|upsilog|phi|chi|psi|omega|Gamma|Delta|Theta|Lambda|Pi|Sigma|Upsilon|Phi|Psi|Omega|ell)' "ln" rwA
 \\`!p snip.rv = match.group(1)`
 endsnippet
 
@@ -708,7 +730,7 @@ snippet << "<<" iA
 endsnippet
 
 context "math()"
-snippet ~~ "~" iA
+snippet sim "~" iA
 \sim 
 endsnippet
 
@@ -734,8 +756,13 @@ snippet pc "subset" Ai
 endsnippet
 
 context "math()"
-snippet notin "not in " iA
+snippet nin "not in " iA
 \notin 
+endsnippet
+
+context "math()"
+snippet not "not in " iA
+\not 
 endsnippet
 
 context "math()"
@@ -776,17 +803,17 @@ endsnippet
 
 context "math()"
 snippet RR "real" iA
-\R
+\mathbb{R}
 endsnippet
 
 context "math()"
 snippet QQ "Q" iA
-\Q
+\mathbb{Q}
 endsnippet
 
 context "math()"
 snippet ZZ "Z" iA
-\Z
+\mathbb{Z}
 endsnippet
 
 context "math()"
@@ -847,12 +874,32 @@ endsnippet
 
 priority 100
 context "math()"
-snippet "([a-zA-Z]|\\mu|\\alpha|\\sigma|\\rho|\\beta|\\gamma|\\delta|\\zeta|\\eta|\\varphi|\\varepsilon|\\epsilon|\\theta|\\iota|\\kappa|\\vartheta|\\lambda|\\nu|\\pi|\\rho|\\tau|\\upsilon|\\phi|\\chi|\\psi|\\omega|\\Gamma|\\Delta|\\Theta|\\Lambda|\\Xi|\\Pi|\\Sigma|\\Upsilon|\\Phi|\\Psi|\\Omega)hat" "hat" riA
-\hat{`!p snip.rv=match.group(1)`$0}
+snippet "([\\|a-z|A-Z|0-9|'|_|^]*)hat" "hat" riA
+\hat{`!p snip.rv=match.group(1)`$1}
 endsnippet
 
-snippet letw "let omega" iA
-Let $\Omega$ be a space.
+snippet wrt "with respect to" i
+w.r.t.
+endsnippet
+
+snippet let "let" b
+Let $$1$ be a $2
+endsnippet
+
+snippet letx "let omega" bA
+Let $X$ be a space
+endsnippet
+
+snippet lettau "Description" bA
+Let $(X,\tau)$ be a topological space
+endsnippet
+
+snippet letdp "Description" bA
+Let $(X,\succsim)$ be a decision problem
+endsnippet
+
+snippet letcdp "Description" bA
+Let $(X,\succsim)$ be a convex decision problem
 endsnippet
 
 priority 100
@@ -890,9 +937,26 @@ snippet var "variance" iA
 \mathop{\text{Var}}\left[ $1 \right]
 endsnippet
 
+
+
 context "math()"
 snippet cov "covariance" iA
 \mathop{\text{Cov}}\left[ $1,$2 \right]
+endsnippet
+
+context "math()"
+snippet eig "eigenvalues" iA
+\mathop{\text{eig}}\left($1\right)
+endsnippet
+
+context "math()"
+snippet rank "rank" iA
+\mathop{\text{rank}}\left( $1 \right)
+endsnippet
+
+context "math()"
+snippet tr "trace" iA
+\mathop{\text{tr}}\left( $1 \right)
 endsnippet
 
 
@@ -923,7 +987,7 @@ endsnippet
 
 priority 100
 context "math()"
-snippet "([\\|a-z|A-Z|']*)bf" "mathbf" riA
+snippet "([\\|a-z|A-Z|0-9|'|_|^]*)bf" "mathbf" riA
 \bm{\mathbf{`!p snip.rv=match.group(1)`$1}}
 endsnippet
 
@@ -960,16 +1024,67 @@ endsnippet
 
 
 snippet cor "corollary" b
+
 ::: {.corollary ${1:#label} name="${2}"}
 
 ${3:${VISUAL}}
 
 :::
+
 endsnippet
+
+snippet exm "example" b
+
+::: {.example ${1:#label} name="${2}"}
+
+${3:${VISUAL}}
+
+:::
+
+endsnippet
+
+snippet exr "example" b
+
+::: {.exercise ${1:#label} name="${2}"}
+
+${3:${VISUAL}}
+
+:::
+
+snippet cnj "example" b
+
+::: {.conjecture ${1:#label} name="${2}"}
+
+${3:${VISUAL}}
+
+:::
+
+endsnippet
+
+snippet prp "example" b
+
+::: {.proposition ${1:#label} name="${2}"}
+
+${3:${VISUAL}}
+
+:::
+
+endsnippet
+
 
 snippet prof "proof" b
 
 ::: {.proof}
+
+${1:${VISUAL}}
+
+:::
+
+endsnippet
+
+snippet rmar "proof" b
+
+::: {.remark}
 
 ${1:${VISUAL}}
 
@@ -984,7 +1099,7 @@ $1
 endsnippet
 
 
-snippet cref "cross reference" i
+snippet cref "cross reference" wA
 \@ref($1:$2)
 endsnippet
 
@@ -1004,7 +1119,7 @@ snippet inv "inverse" iA
 endsnippet
 
 context "math()"
-snippet compl "complement" iA
+snippet cpl "complement" iA
 ^c
 endsnippet
 
