@@ -337,12 +337,12 @@ snippet embed "embedding" Ai
 endsnippet
 
 context "math()"
-snippet ss "embedding" Ai
+snippet sucs "embedding" Ai
 \succsim 
 endsnippet
 
 context "math()"
-snippet su "embedding" Ai
+snippet suc "embedding" Ai
 \succ 
 endsnippet
 
@@ -525,8 +525,8 @@ snippet lra "leftangle rightangle" iA
 endsnippet
 
 context "math()"
-snippet sum "sum" w
-\sum_{i=${1:1}}^{${2:\infty}} ${3:a_iz^i}
+snippet sum "sum" wA
+\sum_{${1:i \in I}}^{} 
 endsnippet
 
 context "math()"
@@ -772,7 +772,7 @@ endsnippet
 
 context "math()"
 snippet NN "n" iA
-\N
+\mathbb{N}
 endsnippet
 
 context "math()"
@@ -878,9 +878,6 @@ snippet "([\\|a-z|A-Z|0-9|'|_|^]*)hat" "hat" riA
 \hat{`!p snip.rv=match.group(1)`$1}
 endsnippet
 
-snippet wrt "with respect to" i
-w.r.t.
-endsnippet
 
 snippet let "let" b
 Let $$1$ be a $2
@@ -989,6 +986,14 @@ priority 100
 context "math()"
 snippet "([\\|a-z|A-Z|0-9|'|_|^]*)bf" "mathbf" riA
 \bm{\mathbf{`!p snip.rv=match.group(1)`$1}}
+endsnippet
+
+snippet tex "latex code" b
+
+::: {.latex}
+$1
+:::
+
 endsnippet
 
 snippet lem "lemma" b
@@ -1123,6 +1128,12 @@ snippet cpl "complement" iA
 ^c
 endsnippet
 
+
+context "math()"
+snippet 11 "indicator" iA
+\bm{\mathbf{1}}
+endsnippet
+
 context "math()"
 snippet eces "complement" iA
 ^e
@@ -1145,6 +1156,14 @@ endsnippet
 
 snippet st "such that" i
 s.t.
+endsnippet
+
+snippet ie "i.e." i
+i.e.
+endsnippet
+
+snippet wrt "with respect to" i
+w.r.t.
 endsnippet
 
 context "math()"
